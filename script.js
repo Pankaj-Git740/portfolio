@@ -9,32 +9,37 @@ AOS.init({
 // Loading Screen
 window.addEventListener("load", () => {
   const loadingScreen = document.getElementById("loading-screen");
-  setTimeout(() => {
-    loadingScreen.style.opacity = "0";
+  if (loadingScreen) {
     setTimeout(() => {
-      loadingScreen.style.display = "none";
-    }, 500);
-  }, 1000);
+      loadingScreen.style.opacity = "0";
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+      }, 500);
+    }, 1000);
+  }
 });
 
 // Typing Animation
 document.addEventListener("DOMContentLoaded", function () {
-  const typed = new Typed("#typed-text", {
-    strings: [
-      "Kumar",
-      "Developer",
-      "Innovator",
-      "Problem Solver",
-      "Tech Enthusiast",
-    ],
-    typeSpeed: 100,
-    backSpeed: 50,
-    backDelay: 2000,
-    startDelay: 1000,
-    loop: true,
-    showCursor: true,
-    cursorChar: "|",
-  });
+  const typedElement = document.getElementById("typed-text");
+  if (typedElement) {
+    const typed = new Typed("#typed-text", {
+      strings: [
+        "Kumar",
+        "Developer",
+        "Innovator",
+        "Problem Solver",
+        "Tech Enthusiast",
+      ],
+      typeSpeed: 100,
+      backSpeed: 50,
+      backDelay: 2000,
+      startDelay: 1000,
+      loop: true,
+      showCursor: true,
+      cursorChar: "|",
+    });
+  }
 });
 
 // Particle Background
@@ -49,7 +54,6 @@ function createParticle() {
   const particlesBg = document.getElementById("particles-bg");
   if (particlesBg) {
     particlesBg.appendChild(particle);
-
     setTimeout(() => {
       particle.remove();
     }, 8000);
@@ -147,6 +151,23 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
+// Mobile Menu Toggle (Replace Alpine.js functionality)
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById("mobile-menu");
+  const menuIcon = document.getElementById("menu-icon");
+  const closeIcon = document.getElementById("close-icon");
+
+  if (mobileMenu.classList.contains("hidden")) {
+    mobileMenu.classList.remove("hidden");
+    menuIcon.classList.add("hidden");
+    closeIcon.classList.remove("hidden");
+  } else {
+    mobileMenu.classList.add("hidden");
+    menuIcon.classList.remove("hidden");
+    closeIcon.classList.add("hidden");
+  }
+}
+
 // Navbar scroll effect
 let lastScrollY = window.scrollY;
 const navbar = document.querySelector("nav");
@@ -154,120 +175,85 @@ const navbar = document.querySelector("nav");
 window.addEventListener("scroll", () => {
   const currentScrollY = window.scrollY;
 
-  // Add/remove backdrop blur based on scroll
-  if (currentScrollY > 50) {
-    navbar.classList.add("backdrop-blur-xl", "bg-white/90");
-    navbar.classList.remove("bg-white/80");
-  } else {
-    navbar.classList.remove("backdrop-blur-xl", "bg-white/90");
-    navbar.classList.add("bg-white/80");
-  }
+  if (navbar) {
+    // Add/remove backdrop blur based on scroll
+    if (currentScrollY > 50) {
+      navbar.classList.add("backdrop-blur-xl", "bg-white/90");
+      navbar.classList.remove("bg-white/80");
+    } else {
+      navbar.classList.remove("backdrop-blur-xl", "bg-white/90");
+      navbar.classList.add("bg-white/80");
+    }
 
-  // Hide/show navbar on scroll
-  if (currentScrollY > lastScrollY && currentScrollY > 100) {
-    navbar.style.transform = "translateY(-100%)";
-  } else {
-    navbar.style.transform = "translateY(0)";
+    // Hide/show navbar on scroll
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      navbar.style.transform = "translateY(-100%)";
+    } else {
+      navbar.style.transform = "translateY(0)";
+    }
   }
 
   lastScrollY = currentScrollY;
 
   // Back to top button
   const backToTop = document.getElementById("backToTop");
-  if (currentScrollY > 300) {
-    backToTop.classList.remove("opacity-0", "invisible");
-  } else {
-    backToTop.classList.add("opacity-0", "invisible");
+  if (backToTop) {
+    if (currentScrollY > 300) {
+      backToTop.classList.remove("opacity-0", "invisible");
+    } else {
+      backToTop.classList.add("opacity-0", "invisible");
+    }
   }
 });
 
 // Back to top functionality
-document.getElementById("backToTop")?.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+const backToTopBtn = document.getElementById("backToTop");
+if (backToTopBtn) {
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   });
-});
+}
 
-// Contact Form Handler (Alpine.js component)
-document.addEventListener("alpine:init", () => {
-  Alpine.data("contactForm", () => ({
-    form: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
-    isSubmitting: false,
-
-    async submitForm() {
-      this.isSubmitting = true;
-
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Show success message
-      alert("Thank you for your message! I'll get back to you soon.");
-
-      // Reset form
-      this.form = {
-        firstName: "",
-        lastName: "",
-        email: "",
-        subject: "",
-        message: "",
-      };
-
-      this.isSubmitting = false;
-    },
-  }));
-});
-
-// Add scroll-triggered animations for elements
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: "0px 0px -50px 0px",
-};
-
-const scrollObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = "1";
-      entry.target.style.transform = "translateY(0)";
-    }
-  });
-}, observerOptions);
-
-// Apply scroll animations to cards and elements
-document.addEventListener("DOMContentLoaded", () => {});
-
+// Resume Functions
 function downloadResume() {
-  // Trigger the hidden download link
-  document.getElementById("resume-download-link").click();
-
-  // Optional: Show success message
-  setTimeout(() => {
-    alert("Resume download started! 📄✨");
-  }, 100);
+  const resumeLink = document.getElementById("resume-download-link");
+  if (resumeLink) {
+    resumeLink.click();
+    setTimeout(() => {
+      alert("Resume download started! 📄✨");
+    }, 100);
+  }
 }
 
 function openPDFModal() {
-  document.getElementById("pdfModal").classList.remove("hidden");
-  document.body.style.overflow = "hidden"; // Background scroll band kar do
+  const modal = document.getElementById("pdfModal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
 }
 
 function closePDFModal() {
-  document.getElementById("pdfModal").classList.add("hidden");
-  document.body.style.overflow = "auto"; // Background scroll wapis on kar do
+  const modal = document.getElementById("pdfModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    document.body.style.overflow = "auto";
+  }
 }
 
-// Background click pe close
-document.getElementById("pdfModal").addEventListener("click", function (e) {
-  if (e.target === this) {
-    closePDFModal();
-  }
-});
+// PDF Modal Event Listeners
+const pdfModal = document.getElementById("pdfModal");
+if (pdfModal) {
+  // Background click pe close
+  pdfModal.addEventListener("click", function (e) {
+    if (e.target === this) {
+      closePDFModal();
+    }
+  });
+}
 
 // Escape key se close
 document.addEventListener("keydown", function (e) {
@@ -276,25 +262,27 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-// ===== EMAIL.JS CONTACT FORM WITH DEBUGGING =====
+// ===== EMAILJS CONTACT FORM (FIXED VERSION) =====
+// Initialize EmailJS with modern syntax
 (function () {
   emailjs.init({
-    publicKey: "AgXBNTZEADcpOCOOy", // Your EmailJS public key
+    publicKey: "AgXBNTZEADcpOCOOy",
     blockHeadless: false,
     limitRate: {
-      throttle: 5,
+      id: "app",
+      throttle: 10000, // 10 seconds
     },
   });
-  console.log("EmailJS initialized"); // Debug log
+  console.log("EmailJS initialized successfully");
 })();
 
-// Contact Form Handler with Enhanced Debugging
+// Contact Form Handler (Fixed)
 const contactForm = document.getElementById("contact-form");
 
 if (contactForm) {
   contactForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    console.log("Form submitted"); // Debug log
+    console.log("Form submitted");
 
     const submitBtn = document.getElementById("submitBtn");
     const successMsg = document.getElementById("successMessage");
@@ -309,18 +297,22 @@ if (contactForm) {
     if (successMsg) successMsg.classList.add("hidden");
     if (errorMsg) errorMsg.classList.add("hidden");
 
-    // Debug: Log form data
+    // Get form values correctly
     const formData = new FormData(this);
     console.log("Form data:", Object.fromEntries(formData));
 
-    // Send email using EmailJS with detailed error logging
+    // Template parameters matching your EmailJS template
     const templateParams = {
-      name: this.querySelector('[name="name"]').value,
-      email: this.querySelector('[name="email"]').value,
-      subject: this.querySelector('[name="subject"]').value,
-      message: this.querySelector('[name="message"]').value,
+      from_name: formData.get("firstName") + " " + formData.get("lastName"),
+      from_email: formData.get("email"),
+      subject: formData.get("subject"),
+      message: formData.get("message"),
+      reply_to: formData.get("email"),
     };
 
+    console.log("Template params:", templateParams);
+
+    // Send email using EmailJS
     emailjs
       .send("service_8sktjqo", "template_4silm5o", templateParams)
       .then(
